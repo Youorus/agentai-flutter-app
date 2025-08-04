@@ -1,0 +1,139 @@
+{
+  "secteurs_et_mots_cles": [
+    {
+      "secteur": "Informatique / IT / Digital",
+      "mots_cles": [
+        "informatique", "développeur", "data", "data analyst", "data scientist", "ingénieur logiciel",
+        "cybersécurité", "cloud", "sysadmin", "devops", "chef de projet informatique", "web", "UX", "UI",
+        "testeur", "product owner", "python", "javascript", "java", "php", "react", "angular", "scrum"
+      ]
+    },
+    {
+      "secteur": "Commerce / Vente",
+      "mots_cles": [
+        "commercial", "vente", "business developer", "ingénieur commercial", "prospection", "téléconseiller",
+        "account manager", "conseiller clientèle", "attaché commercial", "chef des ventes", "responsable magasin",
+        "merchandiser", "directeur commercial", "vendeur", "boutique", "supermarché"
+      ]
+    },
+    {
+      "secteur": "Marketing / Communication",
+      "mots_cles": [
+        "marketing", "chargé de communication", "community manager", "chef de produit", "digital marketing",
+        "seo", "sea", "webmarketing", "responsable marketing", "traffic manager", "crm", "content manager"
+      ]
+    },
+    {
+      "secteur": "Finance / Comptabilité / Banque",
+      "mots_cles": [
+        "comptable", "finance", "contrôleur de gestion", "auditeur", "banque", "gestionnaire de paie",
+        "trésorier", "expert-comptable", "analyste financier", "chargé de clientèle banque", "credit manager"
+      ]
+    },
+    {
+      "secteur": "Assurance / Mutuelle",
+      "mots_cles": [
+        "assurance", "gestionnaire sinistres", "conseiller assurance", "chargé d'indemnisation", "mutuelle",
+        "souscripteur", "chargé de clientèle assurance"
+      ]
+    },
+    {
+      "secteur": "Ressources Humaines / Recrutement",
+      "mots_cles": [
+        "ressources humaines", "rh", "chargé de recrutement", "responsable rh", "assistant rh", "formation",
+        "gestionnaire paie", "talent acquisition", "drh", "recruteur", "responsable formation"
+      ]
+    },
+    {
+      "secteur": "Industrie / Production",
+      "mots_cles": [
+        "production", "industrie", "opérateur de production", "ingénieur production", "qualité", "lean",
+        "maintenance industrielle", "conducteur de ligne", "technicien maintenance", "superviseur production"
+      ]
+    },
+    {
+      "secteur": "BTP / Construction",
+      "mots_cles": [
+        "btp", "chantier", "conducteur de travaux", "maçon", "électricien", "plombier", "chef de chantier",
+        "ingénieur génie civil", "peintre", "charpentier", "menuisier"
+      ]
+    },
+    {
+      "secteur": "Transport / Logistique / Supply Chain",
+      "mots_cles": [
+        "logistique", "magasinier", "cariste", "chauffeur", "transport", "supply chain", "gestionnaire stocks",
+        "préparateur de commandes", "responsable logistique", "affréteur", "agent d'exploitation"
+      ]
+    },
+    {
+      "secteur": "Santé / Médical / Social",
+      "mots_cles": [
+        "infirmier", "aide-soignant", "médecin", "pharmacien", "secrétaire médicale", "sage-femme", "kinésithérapeute",
+        "psychologue", "éducateur spécialisé", "assistant social", "cadre de santé"
+      ]
+    },
+    {
+      "secteur": "Éducation / Formation",
+      "mots_cles": [
+        "enseignant", "professeur", "formateur", "éducation", "formation", "animateur", "responsable pédagogique",
+        "surveillant", "conseiller principal d'éducation"
+      ]
+    },
+    {
+      "secteur": "Administratif / Secrétariat",
+      "mots_cles": [
+        "assistant administratif", "secrétaire", "assistant de direction", "gestion administrative", "office manager",
+        "accueil", "standardiste", "assistant polyvalent"
+      ]
+    },
+    {
+      "secteur": "Juridique / Droit / Notariat",
+      "mots_cles": [
+        "juriste", "avocat", "notaire", "clerc de notaire", "secrétaire juridique", "assistante juridique",
+        "droit social", "droit des affaires"
+      ]
+    },
+    {
+      "secteur": "Agroalimentaire / Agriculture",
+      "mots_cles": [
+        "agroalimentaire", "opérateur agroalimentaire", "technicien qualité", "agriculteur", "ingénieur agronome",
+        "chef de silo", "vétérinaire", "conduite d’engins agricoles"
+      ]
+    },
+    {
+      "secteur": "Hôtellerie / Restauration / Tourisme",
+      "mots_cles": [
+        "serveur", "chef de rang", "commis de cuisine", "cuisinier", "réceptionniste", "femme de chambre",
+        "governant(e)", "directeur d'hôtel", "maître d'hôtel", "sommelier", "animateur club vacances", "barman"
+      ]
+    },
+    {
+      "secteur": "Distribution / Commerce de détail",
+      "mots_cles": [
+        "caissier", "hôte de caisse", "vendeur", "manager rayon", "chef de secteur", "directeur de magasin",
+        "chef de rayon", "préparateur de commandes", "employé libre-service"
+      ]
+    },
+    {
+      "secteur": "Services à la personne / Aide à domicile",
+      "mots_cles": [
+        "aide à domicile", "auxiliaire de vie", "assistant de vie", "garde d'enfants", "aide ménagère",
+        "accompagnant éducatif", "aide aux personnes âgées"
+      ]
+    },
+    {
+      "secteur": "Arts / Culture / Spectacle",
+      "mots_cles": [
+        "artiste", "comédien", "musicien", "metteur en scène", "technicien son", "régisseur", "animateur culturel",
+        "chargé de médiation culturelle", "professeur de musique"
+      ]
+    },
+    {
+      "secteur": "Environnement / Développement durable",
+      "mots_cles": [
+        "environnement", "développement durable", "ingénieur environnement", "technicien déchets", "recyclage",
+        "énergies renouvelables", "biodiversité", "gestion des eaux"
+      ]
+    }
+  ]
+}

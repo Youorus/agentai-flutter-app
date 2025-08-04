@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'features/auth/pages/onboarding.page.dart';
+import 'features/auth/pages/onboarding.page.dart';      // (onboarding d'accueil/intro)
 import 'features/auth/pages/login.page.dart';
 import 'features/home/pages/home.page.dart';
 import 'core/utils/token_storage.dart';
+import 'features/create_user/onboarding_screen.dart';    // (onboarding profil)
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,11 +21,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
 
-      // Routes nommées !
+      // Routes nommées, aucune en doublon !
       routes: {
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginPage(),
-        '/onboarding': (context) => const OnboardingPage(),
+        '/onboarding': (context) => const OnboardingPage(),         // Intro (carousel, etc.)
+        '/onboarding_form': (context) => const OnboardingScreen(),  // Formulaire profil utilisateur
       },
 
       home: FutureBuilder<bool>(

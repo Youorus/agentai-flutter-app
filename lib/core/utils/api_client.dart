@@ -12,6 +12,7 @@ class ApiClient {
 
   Future<String?> getToken() async => await _storage.read(key: 'access_token');
 
+  // POST
   Future<http.Response> post(
     String endpoint, {
     Map<String, String>? headers,
@@ -36,7 +37,7 @@ class ApiClient {
     );
   }
 
-  // === AJOUTE LA MÉTHODE GET CI-DESSOUS ===
+  // GET
   Future<http.Response> get(
     String endpoint, {
     Map<String, String>? headers,
@@ -55,6 +56,31 @@ class ApiClient {
     return await http.get(
       url,
       headers: defaultHeaders,
+    );
+  }
+
+  // PATCH (ajoutée pour les updates partiels)
+  Future<http.Response> patch(
+    String endpoint, {
+    Map<String, String>? headers,
+    dynamic body,
+    bool auth = false,
+  }) async {
+    final url = Uri.parse('${ApiConfig.baseUrl}$endpoint');
+    final defaultHeaders = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+    if (headers != null) defaultHeaders.addAll(headers);
+    if (auth) {
+      final token = await getToken();
+      if (token != null) defaultHeaders['Authorization'] = 'Bearer $token';
+    }
+
+    return await http.patch(
+      url,
+      headers: defaultHeaders,
+      body: body != null ? jsonEncode(body) : null,
     );
   }
 }

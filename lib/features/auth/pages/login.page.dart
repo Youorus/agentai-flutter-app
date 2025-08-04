@@ -9,6 +9,7 @@ import 'signup.page.dart';
 import 'widgets/social_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import '../../email_verification/pages/email.verification.page.dart'; // <-- Ajoute bien ce chemin
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -99,9 +100,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       await TokenStorage.saveToken(token.accessToken);
 
       if (context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomePage()),
-        );
+        if (!token.isEmailVerified) {
+          print( token.isEmailVerified);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => EmailValidationPage(),
+          ));
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const HomePage()),
+          );
+        }
       }
     } catch (e) {
       debugPrint("[GoogleSignIn] Exception: $e");
@@ -138,9 +146,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         await TokenStorage.saveToken(token.accessToken);
 
         if (context.mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const HomePage()),
-          );
+          if (!token.isEmailVerified) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => EmailValidationPage(),
+            ));
+          } else {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const HomePage()),
+            );
+          }
         }
       } else if (result.status == LoginStatus.cancelled) {
         debugPrint("[FacebookSignIn] Connexion annulée");
@@ -191,11 +205,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         password: passCtrl.text,
       );
       await TokenStorage.saveToken(token.accessToken);
+print("[TOKEN RECEIVED] ${token.toJson()}");
 
       if (context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomePage()),
-        );
+        if (!token.isEmailVerified) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => EmailValidationPage()),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const HomePage()),
+          );
+        }
       }
     } catch (e) {
       debugPrint("[Login] Exception: $e");

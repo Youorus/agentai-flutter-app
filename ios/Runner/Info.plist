@@ -77,5 +77,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<!-- *** Permissions localisation (Ajoute ici AVANT la fin du dict) *** -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Nous avons besoin de ta position pour te proposer des offres d'emploi à proximité.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Nous avons besoin de ta position pour te proposer des offres d'emploi à proximité, même lorsque l’application fonctionne en arrière-plan.</string>
+	<!-- *** FIN Permissions localisation *** -->
+
 </dict>
 </plist>

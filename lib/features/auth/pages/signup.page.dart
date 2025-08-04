@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../services/auth.services.dart'; // AuthApi
+import '../services/auth.services.dart';
 import '../models/user.dart';
 import '/core/utils/token_storage.dart';
 import 'widgets/social_button.dart';
@@ -10,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:app/features/home/pages/home.page.dart';
 import 'login.page.dart';
+import '../../email_verification/pages/email.verification.page.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -25,7 +26,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   bool _obscure = true;
   bool _loading = false;
 
-  // Gestion dynamique des erreurs pour UX
   String? emailError;
   String? passError;
   bool emailTouched = false;
@@ -45,7 +45,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     super.dispose();
   }
 
-  // Validation e-mail (regex simple)
   void _validateEmail() {
     setState(() {
       emailTouched = true;
@@ -61,7 +60,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     });
   }
 
-  // Validation mot de passe
   void _validatePass() {
     setState(() {
       passTouched = true;
@@ -80,7 +78,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     });
   }
 
-  // Bouton "Créer mon compte" actif ?
   bool get canSubmit =>
       emailError == null &&
       passError == null &&
@@ -88,18 +85,27 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       passTouched &&
       !_loading;
 
-  /// ---- AUTH GOOGLE ----
+  // --- Redirection centrale après inscription, Google ou Facebook ---
+  void _redirectToEmailValidation(String email) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => EmailValidationPage(),
+      ),
+    );
+  }
+
+  // --- Inscription avec Google ---
   Future<void> _signInWithGoogle() async {
     setState(() => _loading = true);
     try {
       final googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
       final account = await googleSignIn.signIn();
-      if (account == null) return setState(() => _loading = false); // Annulé
+      if (account == null) return setState(() => _loading = false);
       final auth = await account.authentication;
       final token = await AuthApi.googleSignIn(idToken: auth.idToken!);
       await TokenStorage.saveToken(token.accessToken);
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+      // RÉDIRECT TO EMAIL VALIDATION AVEC EMAIL GOOGLE
+      _redirectToEmailValidation(token.email);
     } catch (e) {
       debugPrint("[GoogleSignIn] Exception: $e");
       if (context.mounted) {
@@ -115,7 +121,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     }
   }
 
-  /// ---- AUTH FACEBOOK ----
+  // --- Inscription avec Facebook ---
   Future<void> _signInWithFacebook() async {
     setState(() => _loading = true);
     try {
@@ -126,25 +132,19 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
       if (result.status == LoginStatus.success) {
         final accessToken = result.accessToken!.token;
-        debugPrint("[FacebookSignIn] AccessToken: $accessToken");
-
+        final userData = await FacebookAuth.instance.getUserData();
         final token = await AuthApi.facebookSignIn(accessToken: accessToken);
         await TokenStorage.saveToken(token.accessToken);
-
-        if (context.mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const HomePage()),
-          );
-        }
+        // On redirige toujours vers validation email avec l'email Facebook
+        final email = token.email ?? userData['email'] ?? "${userData['id']}@facebook.com";
+        _redirectToEmailValidation(email);
       } else if (result.status == LoginStatus.cancelled) {
-        debugPrint("[FacebookSignIn] Connexion annulée");
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Connexion Facebook annulée.")),
           );
         }
       } else {
-        debugPrint("[FacebookSignIn] Erreur: ${result.message}");
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -169,7 +169,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     }
   }
 
-  // ---- CREATION CLASSIQUE ----
   Future<void> _handleSignup() async {
     FocusScope.of(context).unfocus();
     setState(() {
@@ -187,18 +186,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         ),
       );
       await TokenStorage.saveToken(token.accessToken);
-
-      if (context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomePage()),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Compte créé avec succès !'),
-            backgroundColor: Colors.green.shade800,
-          ),
-        );
-      }
+      _redirectToEmailValidation(token.email); // <-- On utilise email du token
     } catch (e) {
       debugPrint("[Signup] Exception: $e");
       if (context.mounted) {
@@ -256,7 +244,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 28),
-
                     // --- Champ email ---
                     TextFormField(
                       controller: emailCtrl,
@@ -284,7 +271,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                       onTap: () => setState(() => emailTouched = true),
                     ),
                     const SizedBox(height: 18),
-
                     // --- Champ mot de passe ---
                     TextFormField(
                       controller: passCtrl,
@@ -324,7 +310,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                         padding: const EdgeInsets.only(top: 10.0),
                         child: PasswordStrengthMeter(password: passCtrl.text),
                       ),
-
                     const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
@@ -358,7 +343,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                               ),
                       ),
                     ),
-
                     const SizedBox(height: 22),
                     Row(
                       children: [
@@ -371,7 +355,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-
                     // --- Boutons sociaux ---
                     SocialButton(
                       text: "Continuer avec Google",
@@ -392,7 +375,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     ),
                     // --- Apple plus tard
                     const SizedBox(height: 36),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
