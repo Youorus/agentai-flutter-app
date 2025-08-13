@@ -1,17 +1,120 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import '/features/home/models/offer.dart';
+import '/features/home/components/OfferCard.dart';
 import '/features/auth/pages/widgets/logout_button.dart';
+import '/features/home/services/offer_match_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  List<Offer> offers = [];
+  final _notification = FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    _initNotification();
+    _fetchMatches();
+    // Polling toutes les 30s (ou adapte intervalle)
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 5));
+      await _fetchMatches();
+      return mounted;
+    });
+  }
+
+  Future<void> _initNotification() async {
+    // === Demande la permission iOS
+    final iosPlugin = _notification
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    if (iosPlugin != null) {
+      await iosPlugin.requestPermissions(alert: true, badge: true, sound: true);
+    }
+
+    // === Initialisation cross-platforme
+    const initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initializationSettingsIOS = DarwinInitializationSettings();
+    const initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    await _notification.initialize(initializationSettings);
+  }
+
+  Future<void> _fetchMatches() async {
+    try {
+      final newOffers = await OfferMatchService.getMyMatchedOffers();
+      // Détecter les nouvelles offres
+      final newIds = newOffers.map((o) => o.id).toSet();
+      final oldIds = offers.map((o) => o.id).toSet();
+      final added = newIds.difference(oldIds);
+
+      if (added.isNotEmpty) {
+        for (final id in added) {
+          final offer = newOffers.firstWhere((o) => o.id == id);
+          _showNotificationForOffer(offer);
+        }
+      }
+      setState(() {
+        offers = newOffers;
+      });
+    } catch (e) {
+      print("Erreur lors du chargement des offres matchées : $e");
+      // Tu peux afficher un snackbar/erreur utilisateur si besoin
+    }
+  }
+
+  Future<void> _showNotificationForOffer(Offer offer) async {
+    // Notification Android
+    const android = AndroidNotificationDetails(
+      'offer_channel',
+      'Nouvelles offres',
+      channelDescription: 'Notification pour offres matchées',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    // Notification iOS
+    const ios = DarwinNotificationDetails();
+
+    const notifDetails = NotificationDetails(android: android, iOS: ios);
+
+    await _notification.show(
+      offer.id, // unique ID
+      'Nouvelle offre pour toi : ${offer.title}',
+      offer.companyDescription ?? offer.secteur ?? 'Découvre vite dans l’appli !',
+      notifDetails,
+      payload: offer.id.toString(),
+    );
+  }
+
+  // === TEST NOTIF ===
+  void _testNotification() {
+    final testOffer = Offer(
+      id: DateTime.now().millisecondsSinceEpoch % 100000, // id unique à chaque test
+      source: "Test",
+      url: "https://test",
+      title: "Test Notification Offre",
+      companyDescription: "Cette notification est un test.",
+      location: "Paris",
+      latitude: 0.0,
+      longitude: 0.0,
+      publishedAt: "2025-08-08",
+      contractType: "CDI",
+      description: "Ceci est un test de notification.",
+      secteur: "Tech",
+    );
+    _showNotificationForOffer(testOffer);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Accueil"),
         centerTitle: true,
@@ -23,79 +126,25 @@ class HomePage extends StatelessWidget {
         actions: [
           LogoutButton(
             onLogout: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                '/login', // Ou '/onboarding'
-                (route) => false,
-              );
+              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
             },
           ),
         ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Logo ou mascotte
-                FlutterLogo(size: 84)
-                    .animate()
-                    .fadeIn(duration: 800.ms, curve: Curves.easeOut)
-                    .slideY(begin: 0.08, duration: 800.ms),
-                const SizedBox(height: 32),
-                Text(
-                  "Bienvenue sur votre assistant IA d’emploi",
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colors.onBackground,
-                  ),
-                  textAlign: TextAlign.center,
-                ).animate().fadeIn(delay: 100.ms, duration: 600.ms),
-                const SizedBox(height: 16),
-                Text(
-                  "Découvrez les opportunités, suivez vos candidatures, et profitez de recommandations sur mesure.",
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.grey.shade700,
-                  ),
-                  textAlign: TextAlign.center,
-                ).animate().fadeIn(delay: 220.ms, duration: 700.ms),
-                const SizedBox(height: 40),
-
-                // Actions principales (exemple)
-                FilledButton.icon(
-                  icon: const Icon(Icons.search),
-                  label: const Text("Explorer les offres"),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 26),
-                    textStyle: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                  onPressed: () {
-                    // Naviguer vers la page d’offres
-                  },
-                ).animate().fadeIn(delay: 350.ms),
-                const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.dashboard_customize),
-                  label: const Text("Tableau de bord"),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                    textStyle: theme.textTheme.titleMedium,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                  onPressed: () {
-                    // Naviguer vers la page dashboard
-                  },
-                ).animate().fadeIn(delay: 450.ms),
-                const SizedBox(height: 32),
-                // Autres infos, badges ou widgets ici…
-              ],
-            ),
-          ),
+      body: RefreshIndicator(
+        onRefresh: _fetchMatches,
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 8),
+          itemCount: offers.length,
+          itemBuilder: (context, index) {
+            return OfferCard(offer: offers[index]);
+          },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _testNotification,
+        tooltip: 'Tester notification',
+        child: const Icon(Icons.notifications_active),
       ),
     );
   }

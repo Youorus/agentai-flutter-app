@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app/features/create_user/components/animated_step_container.dart';
 import 'package:app/features/create_user/components/city_step.dart';
+import 'package:app/features/create_user/components/distance_step.dart';
 import 'package:app/features/create_user/components/job_alerts_step.dart';
 import 'package:app/features/create_user/components/job_titles_step.dart';
 import 'package:app/features/create_user/components/professional_status_step.dart';
@@ -56,23 +57,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _profile.longitude = lon;
         });
         break;
-      case 2:
+      case 2: // NEW STEP: Distance
+        await _saveField('max_distance_km', value);
+        setState(() => _profile.maxDistanceKm = value);
+        break;
+      case 3:
         await _saveField('industries', value);
         setState(() => _profile.industries = value);
         break;
-      case 3:
-        await _saveField('professional_status', value); // <-- Liste !
+      case 4:
+        await _saveField('professional_status', value);
         setState(() => _profile.professionalStatus = value);
         break;
-      case 4:
+      case 5:
         await _saveField('job_titles', value);
         setState(() => _profile.jobTitles = value);
         break;
-      case 5:
+      case 6:
         await _saveField('contract_types', value);
         setState(() => _profile.contractTypes = value);
         break;
-      case 6:
+      case 7:
         await _saveField('job_alerts_active', value);
         setState(() => _profile.jobAlertsActive = value);
         Navigator.of(context).pushReplacementNamed('/home');
@@ -107,31 +112,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         );
         break;
       case 2:
+  content = DistanceStep(
+    initialDistance: _profile.maxDistanceKm,
+    cityLat: _profile.latitude,      // récupérés depuis CityStep
+    cityLon: _profile.longitude,
+    onValidated: _nextStep,
+  );
+  break;
+      
+      case 3:
         content = IndustriesStep(
           initialIndustries: _profile.industries,
           onValidated: _nextStep,
         );
         break;
-      case 3:
+      case 4:
         content = ProfessionalStatusStep(
           initialStatuses: _profile.professionalStatus, // <- List<String>
           onValidated: _nextStep,
         );
         break;
-      case 4:
+      case 5:
         content = JobTitlesStep(
           initialTitles: _profile.jobTitles,
           selectedSecteurs: _profile.industries,
           onValidated: _nextStep,
         );
         break;
-      case 5:
+      case 6:
         content = ContractTypesStep(
           initialTypes: _profile.contractTypes,
           onValidated: _nextStep,
         );
         break;
-      case 6:
+      case 7:
         content = JobAlertsStep(
           initialValue: _profile.jobAlertsActive,
           onValidated: _nextStep,

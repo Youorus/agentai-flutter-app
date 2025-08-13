@@ -78,12 +78,23 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 
-	<!-- *** Permissions localisation (Ajoute ici AVANT la fin du dict) *** -->
+	<!-- *** Permissions localisation (messages explicites) *** -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Nous avons besoin de ta position pour te proposer des offres d'emploi à proximité.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Nous avons besoin de ta position pour te proposer des offres d'emploi à proximité, même lorsque l’application fonctionne en arrière-plan.</string>
+	<string>Nous avons besoin de ta position pour te proposer des offres d'emploi proches, même en arrière-plan.</string>
 	<!-- *** FIN Permissions localisation *** -->
+
+	<!-- *** Notifications locales *** -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>NSUserNotificationAlertStyle</key>
+	<string>Alert</string>
+	<key>NSLocalNotificationUsageDescription</key>
+	<string>Nous utilisons les notifications pour te prévenir lorsqu’une nouvelle offre d’emploi correspond à ton profil.</string>
+	<!-- *** FIN Notifications locales *** -->
 
 </dict>
 </plist>

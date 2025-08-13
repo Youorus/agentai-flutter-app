@@ -1,5 +1,3 @@
-// lib/models/user_profile.dart
-
 class UserProfile {
   String username;
   String? city;
@@ -8,8 +6,9 @@ class UserProfile {
   List<String>? contractTypes;
   List<String>? jobTitles;
   List<String>? industries;
-  List<String>? professionalStatus; // <--- Correction ICI !
+  List<String>? professionalStatus;
   bool jobAlertsActive;
+  double? maxDistanceKm; // <-- Ajouté ici
 
   UserProfile({
     required this.username,
@@ -19,8 +18,9 @@ class UserProfile {
     this.contractTypes,
     this.jobTitles,
     this.industries,
-    this.professionalStatus, // <--- Correction ICI !
+    this.professionalStatus,
     this.jobAlertsActive = true,
+    this.maxDistanceKm, // <-- Ajout ici
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
@@ -31,8 +31,9 @@ class UserProfile {
     contractTypes: (json['contract_types'] as List?)?.cast<String>(),
     jobTitles: (json['job_titles'] as List?)?.cast<String>(),
     industries: (json['industries'] as List?)?.cast<String>(),
-      professionalStatus: (json['professional_status'] as List?)?.cast<String>(), // <-- Correction ICI !
+    professionalStatus: (json['professional_status'] as List?)?.cast<String>(),
     jobAlertsActive: json['job_alerts_active'] ?? true,
+    maxDistanceKm: json['max_distance_km']?.toDouble(), // <-- Ajout
   );
 
   Map<String, dynamic> toJson() => {
@@ -43,7 +44,8 @@ class UserProfile {
     'contract_types': contractTypes,
     'job_titles': jobTitles,
     'industries': industries,
-    'professional_status': professionalStatus, // <-- Correction ICI !
+    'professional_status': professionalStatus,
     'job_alerts_active': jobAlertsActive,
+    'max_distance_km': maxDistanceKm, // <-- Ajout
   };
 }

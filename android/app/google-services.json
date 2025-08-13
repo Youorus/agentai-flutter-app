@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "270847118583",
+    "project_id": "agentia-4cb78",
+    "storage_bucket": "agentia-4cb78.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270847118583:android:ab6a893da555fe5782d7f2",
+        "android_client_info": {
+          "package_name": "com.agentai.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270847118583-1se5370jgj7j8572hsfn7fjr2k40368v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2M7gCJE8YwFBJ4VV8FrJ72ZdHYA1zlk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270847118583-1se5370jgj7j8572hsfn7fjr2k40368v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "270847118583-o8fpr5e9saqf6r3qlu9919pfnip37tph.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.agentai.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

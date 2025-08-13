@@ -11,6 +11,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:app/features/home/pages/home.page.dart';
 import 'login.page.dart';
 import '../../email_verification/pages/email.verification.page.dart';
+import 'package:app/core/notifications/services/push_api.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -104,6 +105,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       final auth = await account.authentication;
       final token = await AuthApi.googleSignIn(idToken: auth.idToken!);
       await TokenStorage.saveToken(token.accessToken);
+      await PushApi.syncCurrentToken();
       // RÉDIRECT TO EMAIL VALIDATION AVEC EMAIL GOOGLE
       _redirectToEmailValidation(token.email);
     } catch (e) {
@@ -136,6 +138,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         final token = await AuthApi.facebookSignIn(accessToken: accessToken);
         await TokenStorage.saveToken(token.accessToken);
         // On redirige toujours vers validation email avec l'email Facebook
+         await PushApi.syncCurrentToken();
         final email = token.email ?? userData['email'] ?? "${userData['id']}@facebook.com";
         _redirectToEmailValidation(email);
       } else if (result.status == LoginStatus.cancelled) {
@@ -186,6 +189,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         ),
       );
       await TokenStorage.saveToken(token.accessToken);
+       await PushApi.syncCurrentToken();
       _redirectToEmailValidation(token.email); // <-- On utilise email du token
     } catch (e) {
       debugPrint("[Signup] Exception: $e");

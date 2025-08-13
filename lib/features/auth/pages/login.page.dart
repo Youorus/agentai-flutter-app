@@ -9,7 +9,8 @@ import 'signup.page.dart';
 import 'widgets/social_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import '../../email_verification/pages/email.verification.page.dart'; // <-- Ajoute bien ce chemin
+import '../../email_verification/pages/email.verification.page.dart'; 
+import 'package:app/core/notifications/services/push_api.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -98,7 +99,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final auth = await account.authentication;
       final token = await AuthApi.googleSignIn(idToken: auth.idToken!);
       await TokenStorage.saveToken(token.accessToken);
-
+      await PushApi.syncCurrentToken();
       if (context.mounted) {
         if (!token.isEmailVerified) {
           print( token.isEmailVerified);
@@ -144,7 +145,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
         final token = await AuthApi.facebookSignIn(accessToken: accessToken);
         await TokenStorage.saveToken(token.accessToken);
-
+      await PushApi.syncCurrentToken();
         if (context.mounted) {
           if (!token.isEmailVerified) {
             Navigator.of(context).pushReplacement(
@@ -206,7 +207,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       );
       await TokenStorage.saveToken(token.accessToken);
 print("[TOKEN RECEIVED] ${token.toJson()}");
-
+await PushApi.syncCurrentToken();
       if (context.mounted) {
         if (!token.isEmailVerified) {
           Navigator.of(context).pushReplacement(
